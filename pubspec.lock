@@ -9,6 +9,10 @@ packages:
     description: ansicolor
     source: hosted
     version: "0.0.9"
+  archive:
+    description: archive
+    source: hosted
+    version: "1.0.19"
   args:
     description: args
     source: hosted

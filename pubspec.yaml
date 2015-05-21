@@ -11,6 +11,8 @@ dependencies:
 #    git: https://github.com/lrhn/dep-pkgspec.git/packages_file
     path: ../dart-lang/dep-pkgspec/packages_file
   test: '^0.12.1'
+  path: '^1.3.5'
+  archive: '^1.0.19'
 executables:
   pubs:
 

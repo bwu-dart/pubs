@@ -31,6 +31,7 @@ format() => _format();
 lint() => _lint();
 
 _buildServer() {
+  // TODO(zoechi) restore before checkin // Pub.build(mode: 'release', directories: ['web']);
   _activatePubs();
   Pub.global.run('pubs', arguments: ['deploy', 'server']);
 }
@@ -38,7 +39,7 @@ _buildServer() {
 void _activatePubs() {
   if (!Pub.global.isActivated('pubs')) {
     run(_sdkBin('pub'),
-        arguments: ['global', 'activate', '-spath', '../../..']);
+        arguments: ['global', 'activate', '-spath', '../..']);
   }
 }
 
