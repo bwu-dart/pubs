@@ -1,0 +1,25 @@
+name: sample_project
+author: Günter Zöchbauer <guenter@gzoechbauer.com>
+environment:
+  sdk: '>=1.9.0 <2.0.0'
+description: Sample project to test deployment
+
+dependencies:
+  browser: '^0.10.0+2'
+  yaml: '^2.1.2'
+  polymer: '^0.16.3+2'
+  core_elements: '^0.7.1+2'
+
+  logging: '^0.11.1'
+  quiver_log: '^1.0.3'
+
+dev_dependencies:
+  grinder: '^0.7.1+1'
+  test: '^0.12.1'
+
+transformers:
+- polymer:
+    entry_point: web/index.html
+
+- $dart2js:
+    $exclude: bin
