@@ -31,7 +31,8 @@ format() => _format();
 lint() => _lint();
 
 _buildServer() {
-  // TODO(zoechi) restore before checkin // Pub.build(mode: 'release', directories: ['web']);
+  // TODO(zoechi) restore before check-in
+  // Pub.build(mode: 'release', directories: ['web']);
   _activatePubs();
   Pub.global.run('pubs', arguments: ['deploy', 'server']);
 }

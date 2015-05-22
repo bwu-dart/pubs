@@ -6,13 +6,15 @@ environment:
   sdk: '>=1.9.0 <2.0.0'
 description: Automate Dart build and deploy tasks.
 dependencies:
-  browser: any
-  packages_file:
-#    git: https://github.com/lrhn/dep-pkgspec.git/packages_file
-    path: ../dart-lang/dep-pkgspec/packages_file
+
+  analyzer: '^0.25.0+1'
+  package_config:
+    git: https://github.com/dart-lang/package_config.git
   test: '^0.12.1'
   path: '^1.3.5'
   archive: '^1.0.19'
+  cli_util: '^0.0.1+2'
+
 executables:
   pubs:
 
