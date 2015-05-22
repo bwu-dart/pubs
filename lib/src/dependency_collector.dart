@@ -18,12 +18,31 @@ import 'package:analyzer/src/generated/source_io.dart';
 import 'package:cli_util/cli_util.dart' as cli_util;
 
 class DependencyCollector {
-  void collect(io.Directory directory) {
-    final files = collectFiles(directory);
-    final options = new DriverOptions()..packageRootPath = new io.Directory('sub_projects/sample_project/packages').absolute.path;
-    final analysisDriver = new AnalysisDriver(options);
-    analysisDriver.analyze(files.where((f) => isDartFile(f)));
-    print(analysisDriver);
+
+  /// The sources which have been analyzed so far.  This is used to avoid
+  /// analyzing a source more than once, and to compute the total number of
+  /// sources analyzed for statistics.
+  Set<Source> get sourcesAnalyzed =>
+      _analysisDriver == null ? null : _analysisDriver.sourcesAnalyzed;
+
+  /// All packages referenced using `package:` imports.
+  Set<String> get referencedPackages =>
+      _analysisDriver == null ? null : _analysisDriver.referencedPackages;
+
+  /// All files referenced from packages using `package:` imports.
+  Set<Source> get referencedFiles =>
+      _analysisDriver == null ? null : _analysisDriver.referencedFiles;
+
+  AnalysisDriver _analysisDriver;
+
+  void collect(io.Directory directory, [DriverOptions options]) {
+    if (options == null) {
+      options = new DriverOptions();
+    }
+    final _files = collectFiles(directory);
+    //final options = new DriverOptions()..packageRootPath = new io.Directory('sub_projects/sample_project/packages').absolute.path;
+    _analysisDriver = new AnalysisDriver(options);
+    _analysisDriver.analyze(_files.where((f) => isDartFile(f)));
   }
 
   /// Collect all Dart source files, recursively, under this [path] root, ignoring
@@ -44,7 +63,7 @@ class DependencyCollector {
     return files;
   }
 
-    /// Returns `true` if this [entry] is a Dart file.
+  /// Returns `true` if this [entry] is a Dart file.
   bool isDartFile(io.FileSystemEntity entry) => isDartFileName(entry.path);
 
   /// Returns `true` if this relative path is a hidden directory.
@@ -53,11 +72,9 @@ class DependencyCollector {
 
   /// Returns `true` if this [fileName] is a Dart file.
   bool isDartFileName(String fileName) => fileName.endsWith('.dart');
-
 }
 
 class AnalysisDriver {
-
 
   /// The sources which have been analyzed so far.  This is used to avoid
   /// analyzing a source more than once, and to compute the total number of
@@ -161,13 +178,19 @@ class AnalysisDriver {
             //context.computeErrors(source);
 //            errors.add(context.getErrors(source));
             sourcesAnalyzed.add(source);
-            if(source.uri.scheme == 'dart') {
-            } else if(source.uri.scheme == 'file') {
-              referencedFiles.add(source);
-            } else if(source.uri.scheme == 'package') {
-              referencedFiles.add(source);
-              referencedPackages.add(source.uri.pathSegments.first);
-            } else {
+            switch (source.uriKind) {
+              case UriKind.DART_URI:
+                // do nothing
+                break;
+              case UriKind.FILE_URI:
+                referencedFiles.add(source);
+                break;
+              case UriKind.PACKAGE_URI:
+                referencedFiles.add(source);
+                referencedPackages.add(source.uri.pathSegments.first);
+                break;
+              default:
+                print('Unknown Uri kind "${source.uriKind}".');
               // do nothing
             }
           }
@@ -175,7 +198,7 @@ class AnalysisDriver {
       }
     }
   }
-    /// Yield the sources for all the compilation units constituting
+  /// Yield the sources for all the compilation units constituting
   /// [librarySource] (including the defining compilation unit).
   Iterable<Source> _getAllUnitSources(
       AnalysisContext context, Source librarySource) {
