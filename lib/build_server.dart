@@ -44,7 +44,7 @@ class BuildOptions {
       defaultStaticFilesDestinationDirectory;
   /// Use the analyzer to find which Dart source files are actually used and
   /// skip copying all others.
-  bool skipUnusedFiles = true;
+  bool skipUnusedFiles = false;
   /// Explicitly include files and directories of packages which are
   /// skipped when [skipUnusedFiles] is [:true:] resource files.
   /// [include] is ignored when [skipUnusedFiles] is [:false:]
@@ -124,7 +124,7 @@ class BuildServer {
 //      final packageDirectoryPath = path.join('packages', packageName);
       final destinationPath =
           path.join(options.outputDirectory.path, 'packages', packageName);
-      packagesMapDestination[packageName] = destinationPath;
+      packagesMapDestination[packageName] = new io.Directory(destinationPath);
     });
   }
 
@@ -290,6 +290,8 @@ class BuildServer {
       });
     } else {
       packagesMapSource.forEach((packageName, sourceDirectory) {
+        print(
+            '${packagesMapSource[packageName]} - ${packagesMapDestination[packageName]}');
         _copyImpl(packagesMapSource[packageName],
             packagesMapDestination[packageName]);
       });
