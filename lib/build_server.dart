@@ -26,25 +26,36 @@ final defaultStaticFilesSourceDirectory = new io.Directory('build/web');
 final defaultStaticFilesDestinationDirectory =
     new io.Directory('build/bin/web');
 
+/// Options to customize how the deployment directory is created.
 class BuildOptions {
   /// The directory where the deployable directory is created.
   io.Directory outputDirectory = defaultOutputDirectory;
+
   /// The directory containing the server application entry points.
   io.Directory binDirectory = defaultBinDirectory;
+
   /// The packages directory used to resolve package dependencies.
   io.Directory packageRoot = defaultPackagesRoot;
+
   /// The `.package` file used to resolve package dependencies.
-  /// If [packagesFile] is found, [packageRoot] is ignored.
+  /// If [packagesFile] is provided and found, [packageRoot] is ignored.
   io.File packagesFile = defaultPackagesFile;
+
   /// A directory containing static files to copy into the deployable directory.
+  /// For example `build/web`.
   io.Directory get staticFilesSourceDirectory =>
       defaultStaticFilesSourceDirectory;
-  /// The destination directory where to copy the static files to.
+
+  /// The destination directory inside the deployable directory, where to copy
+  /// the static files to.
   io.Directory get staticFilesDestinationDirectory =>
       defaultStaticFilesDestinationDirectory;
+
   /// Use the analyzer to find which Dart source files are actually used and
-  /// skip copying all others.
+  /// skip copying all others. If files are imported they will be copied, no
+  /// matter if the code is actually used. This is *no* tree-shaking mechanism.
   bool skipUnusedFiles = false;
+
   /// Explicitly include files and directories of packages which are
   /// skipped when [skipUnusedFiles] is [:true:] resource files.
   /// [include] is ignored when [skipUnusedFiles] is [:false:]
@@ -52,26 +63,41 @@ class BuildOptions {
   /// paths relative to the packages `lib` directory.
   /// TODO(zoechi) add Glob support.
   Map<String, List<String>> include = {};
-  /// Create a ZIP archive file containing all files in [defaultOutputDirectory].
+
+  /// Create a ZIP archive file containing all files copied to the
+  /// [options.outputDirectory].
   bool createArchive = true;
+
   /// The filename to use for the generated ZIP archive.
   String archiveFileName = 'server_deployable.zip';
 }
 
+/// Creates a deployable directory and optional a ZIP archive from a Dart
+/// server-side (console) application.
 class BuildServer {
   BuildOptions options;
+
   io.File pubspecFile = defaultPubspecFile;
-  /// A map from a package name to the source directory.
+
+  /// A map from a dependency package name to the actual location on the file
+  /// system.
   Map<String, io.Directory> packagesMapSource;
+
+  /// A map from a dependency package name to the path inside the deployable
+  /// directory where the files will be copied to.
   Map<String, io.Directory> packagesMapDestination;
+
+  /// A list of files and directories to copy to the deployable directory.
   HashSet<CopyItem> itemsToCopy;
 
+  /// If [options] is omitted the default configuration is used.
   BuildServer([this.options]) {
     if (options == null) {
       options = new BuildOptions();
     }
   }
 
+  /// Executes the default steps to create a deployable directory
   void runAll() {
     purgeOutputDirectory();
     copyBinDirectory();
@@ -79,11 +105,11 @@ class BuildServer {
     collectItemsToCopy();
     copyItems();
     createPackagesFile();
-    copyWeb();
+    copyStaticFiles();
     createZipArchive();
   }
 
-  /// Clear the output directory before the new output is generated.
+  /// Purge all files in the output directory before the new output is generated.
   void purgeOutputDirectory() {
     if (!_checkWorkingDirectory()) {
       throw 'No "pubspec.yaml" file found. "${io.Directory.current.path}" doesn\'t seem to be the root directory of a Dart package.';
@@ -95,11 +121,12 @@ class BuildServer {
   }
 
   /// check that the current working directory contains a `pubspec.yaml` to
-  /// ensure we are in the right directory before deleting any files.
+  /// ensure we are in the right directory before deleting any files in `build`.
   bool _checkWorkingDirectory() {
     return pubspecFile.existsSync();
   }
 
+  /// Copy the entire content of the `bin` directory to the deployable directory.
   void copyBinDirectory() {
     if (!options.binDirectory.existsSync()) {
       throw ('No "bin" directory found.');
@@ -107,6 +134,9 @@ class BuildServer {
     copyDirectory(options.binDirectory, options.outputDirectory);
   }
 
+  /// Build a map from dependency package names to the actual location on the
+  /// file system. This method fills [packagesMapSource] and
+  /// [packagesMapDestination].
   void buildPackagesMaps() {
     switch (discoverPackageReferenceSystem()) {
       case PackageReferenceSystem.unknown:
@@ -128,6 +158,8 @@ class BuildServer {
     });
   }
 
+  /// Copies the collected file and directory candidates to be copied to the
+  /// deployable directory.
   void copyItems() {
     itemsToCopy.where((e) => e is CopyDirectory).forEach((e) {
       (e.destination as io.Directory).createSync(recursive: true);
@@ -138,6 +170,9 @@ class BuildServer {
     });
   }
 
+  /// Create the `.packages` file in the deployable directory which maps from
+  /// the dependency package names to the actual directory inside the deployable
+  /// directory.
   void createPackagesFile() {
     String content = packagesMapDestination.keys
         .map((k) => '${k}=${packagesMapDestination[k]}')
@@ -148,6 +183,8 @@ class BuildServer {
         .writeAsStringSync(content);
   }
 
+  /// Build the map from dependency packages to actual location on disk from the
+  /// symlinks in the `packages` directory.
   Map<String, io.Directory> packagesMapFromPackagesDirectory() {
     final result = <String, io.Directory>{};
     final packageDirectories = options.packageRoot.listSync(recursive: false);
@@ -166,6 +203,8 @@ class BuildServer {
     return result;
   }
 
+  /// Build the map from dependency packages to actual location on disk.
+  /// This just loads and parses the `.packages` file.
   Map<String, io.Directory> packagesMapFromPackagesFile() {
     Packages packages = Packages.parse(options.packagesFile.readAsStringSync(),
         Uri.parse(io.Directory.current.path));
@@ -176,27 +215,31 @@ class BuildServer {
         value: (k) => new io.Directory.fromUri(packages.packageMapping[k]));
   }
 
+  /// Returns whether a `packages` directory or a `.packages` file is used
+  /// to reference the actualy location on the file system for dependencies.
   PackageReferenceSystem discoverPackageReferenceSystem() {
-    if (defaultPackagesFile.existsSync()) {
+    if (options.packagesFile != null && options.packagesFile.existsSync()) {
       return PackageReferenceSystem.packagesFile;
-    } else if (options.packageRoot.existsSync()) {
+    } else if (options.packageRoot != null &&
+        options.packageRoot.existsSync()) {
       return PackageReferenceSystem.packagesLinks;
     } else {
       return PackageReferenceSystem.unknown;
     }
   }
 
-  void copyWeb() {
-    if (options.staticFilesSourceDirectory == null) {
-      return;
-    }
-    if (defaultStaticFilesSourceDirectory.existsSync()) {
+  /// Copies files from the [options.staticFilesSourceDirectory] to
+  void copyStaticFiles() {
+    if (options.staticFilesSourceDirectory != null &&
+        options.staticFilesSourceDirectory.existsSync()) {
       _copyImpl(options.staticFilesSourceDirectory,
           options.staticFilesDestinationDirectory,
           skipPackages: false, followLinks: true);
     }
   }
 
+  /// Creates a ZIP archive file from all files copied to the deployable
+  /// directory.
   void createZipArchive() {
     if (!options.createArchive) {
       return;
@@ -224,6 +267,8 @@ class BuildServer {
       ..writeAsBytesSync(zipData);
   }
 
+  /// Copy the content of directory [source] into the directory [destination].
+  /// No error is produced if the [source] directory doesn't exist.
   void copyDirectory(io.Directory source, io.Directory destination) {
     assert(source != null);
     assert(destination != null);
@@ -233,6 +278,12 @@ class BuildServer {
     }
   }
 
+  /// Collects all files that should be copied to the deployable directory and
+  /// fills [itemsToCopy] with the found files.
+  /// If [options.skipUnusedFiles] is [:true:] the analyzer is used to find out
+  /// which files are actually referenced from the entry point and just add
+  /// these to [itemsToCopy] while ignoring unreferended dependency packages and
+  /// also unreferenced files from referenced dependencies.
   void collectItemsToCopy() {
     itemsToCopy = new HashSet<CopyItem>();
     if (options.skipUnusedFiles) {
@@ -290,16 +341,18 @@ class BuildServer {
       });
     } else {
       packagesMapSource.forEach((packageName, sourceDirectory) {
-        print(
-            '${packagesMapSource[packageName]} - ${packagesMapDestination[packageName]}');
         _copyImpl(packagesMapSource[packageName],
             packagesMapDestination[packageName]);
       });
     }
   }
 
-  /// [skipPackages] can be disabled when `packages` becomes a valid directory
-  /// name to copy them as well.
+  /// Copy [entity], a file or a directory recursively to the directory
+  /// [destinationDir].
+  /// [skipPackages] ignores directories named `packages` to not copy these
+  /// auto-generated directories by pub in `bin` and subdirectories of `bin`
+  /// while `packages` directories from `build/web` need to be copied.
+  /// [followLinks]
   void _copyImpl(io.FileSystemEntity entity, io.Directory destinationDir,
       {bool skipPackages: true, bool followLinks: true}) {
     if (entity is io.Directory) {
@@ -340,8 +393,12 @@ class BuildServer {
   }
 }
 
+/// The list of supported methods to map dependency package names to actual
+/// locations on the file system.
 enum PackageReferenceSystem { unknown, packagesLinks, packagesFile, }
 
+/// An item (file or directory) to copy to the deployable directory, mapping
+/// from the source location to the destination locateion.
 abstract class CopyItem {
   final io.FileSystemEntity source;
   io.FileSystemEntity destination;
@@ -357,6 +414,7 @@ abstract class CopyItem {
   }
 }
 
+/// A file to copy to the deployable directory.
 class CopyFile extends CopyItem {
   CopyFile._(io.File file, io.File destination) : super._(file, destination);
 
@@ -364,6 +422,7 @@ class CopyFile extends CopyItem {
   io.File get destination => super.destination;
 }
 
+/// A directory to copy to the deployable directory.
 class CopyDirectory extends CopyItem {
   CopyDirectory._(io.Directory directory, io.Directory destination)
       : super._(directory, destination);

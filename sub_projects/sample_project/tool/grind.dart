@@ -1,8 +1,8 @@
 library sample_project.tool.grind;
 
 import 'package:grinder/grinder.dart';
-import 'dart:io' as io;
-import 'package:which/which.dart';
+//import 'dart:io' as io;
+//import 'package:which/which.dart';
 
 const sourceDirs = const ['bin', 'example', 'lib', 'test', 'tool', 'web'];
 
@@ -14,7 +14,7 @@ buildServer() => _buildServer();
 @Task('Run analyzer')
 analyze() => _analyze();
 
-@Task('Runn all tests')
+@Task('Run all tests')
 test() => _test();
 
 @Task('Check everything')
@@ -31,34 +31,33 @@ format() => _format();
 lint() => _lint();
 
 _buildServer() {
-  // TODO(zoechi) restore before check-in
-  // Pub.build(mode: 'release', directories: ['web']);
-  _activatePubs();
+//  _activatePubs();
   Pub.global.run('pubs', arguments: ['deploy', 'server']);
 }
 
-void _activatePubs() {
-  if (!Pub.global.isActivated('pubs')) {
-    run(_sdkBin('pub'),
-        arguments: ['global', 'activate', '-spath', '../..']);
-  }
-}
+// Used during development to activate from -spath .
+//void _activatePubs() {
+//  if (!Pub.global.isActivated('pubs')) {
+//    run(_sdkBin('pub'),
+//        arguments: ['global', 'activate', '-spath', '../..']);
+//  }
+//}
 
-// copied from Grinder because it's private there
-// TODO(zoechi) remove if implementation becomes available
-String _sdkBin(String name) {
-  if (io.Platform.isWindows) {
-    return name == 'dart' ? 'dart.exe' : '${name}.bat';
-  } else if (io.Platform.isMacOS) {
-    // If `dart` is not visible, we should join the sdk path and `bin/$name`.
-    // This is only necessary in unusual circumstances, like when the script is
-    // run from the Editor on macos.
-    final _sdkOnPath = whichSync('dart', orElse: () => null) != null;
-    return _sdkOnPath ? name : '${sdkDir.path}/bin/${name}';
-  } else {
-    return name;
-  }
-}
+//// copied from Grinder because it's private there
+//// TODO(zoechi) remove if implementation becomes available
+//String _sdkBin(String name) {
+//  if (io.Platform.isWindows) {
+//    return name == 'dart' ? 'dart.exe' : '${name}.bat';
+//  } else if (io.Platform.isMacOS) {
+//    // If `dart` is not visible, we should join the sdk path and `bin/$name`.
+//    // This is only necessary in unusual circumstances, like when the script is
+//    // run from the Editor on macos.
+//    final _sdkOnPath = whichSync('dart', orElse: () => null) != null;
+//    return _sdkOnPath ? name : '${sdkDir.path}/bin/${name}';
+//  } else {
+//    return name;
+//  }
+//}
 
 _analyze() => new PubApp.global('tuneup').run(['check']);
 
