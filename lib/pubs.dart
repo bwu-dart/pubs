@@ -2,7 +2,6 @@ library pubs.bin.pubs;
 
 import 'dart:io' as io;
 import 'package:unscripted/unscripted.dart';
-import 'package:unscripted/src/plugins/help/help.dart';
 import 'package:pubs/build_server_deployable.dart';
 import 'dart:convert' show JSON;
 
@@ -19,7 +18,7 @@ class BuildServerDeployableCommand {
 Create a directory consiting of all files necessary to deploy the server
               application. Optionally create a ZIP archive.
 ''') // special string formatting for proper usage output
-  deployable({ //
+  deployable(@Positional() int count, { //
       @Option(help: '''
 The absolute or relative path where the directory should be created.''',
           abbr: 'o',
@@ -33,16 +32,10 @@ application entry points.''', //
       String binDirectory,
       //
       @Option(help: '''
-The packages directory used to find dependency packages on the file system.''',
-          abbr: 'p',
-          defaultsTo: defaultPackageRoot) //
-      String packageRoot,
-      //
-      @Option(help: '''
-The `.package` file used to find dependency packages in the file system.''',
-          abbr: 'f',
-          defaultsTo: defaultPackagesFile) //
-      String packagesFile,
+The directory where the package discovery starts to find a `.packages` file or a
+`packages` directory. Default is the current working directory.''',
+          abbr: 'p') //
+      String packageDiscoveryStart,
       //
       @Option(help: '''
 A directory containing static files to copy into the deployable directory.''',
@@ -98,11 +91,8 @@ The name of the created ZIP archive file.''',
     if (binDirectory != null) {
       options.binDirectory = new io.Directory(binDirectory);
     }
-    if (packageRoot != null) {
-      options.packageRoot = new io.Directory(packageRoot);
-    }
-    if (packagesFile != null) {
-      options.packagesFile = new io.File(packagesFile);
+    if (packageDiscoveryStart != null) {
+      options.packageDiscoveryStart = new io.Directory(packageDiscoveryStart);
     }
     if (staticSource != null) {
       options.staticFilesSourceDirectory = new io.Directory(staticSource);

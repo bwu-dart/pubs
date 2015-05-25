@@ -17,6 +17,8 @@ import 'package:analyzer/src/generated/source_io.dart';
 
 import 'package:cli_util/cli_util.dart' as cli_util;
 
+/// Uses the analyzer to find all packages which are imported by the entry
+/// points and which files from these packages are imported.
 class DependencyCollector {
 
   /// The sources which have been analyzed so far.  This is used to avoid

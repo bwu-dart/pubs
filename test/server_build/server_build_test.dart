@@ -4,7 +4,7 @@ import 'dart:io' as io;
 import 'package:grinder/grinder.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
-import 'package:pubs/build_server.dart';
+import 'package:pubs/build_server_deployable.dart';
 
 final sampleProjectDirectory = new io.Directory('sub_projects/sample_project');
 io.Directory get outputDirectory => new io.Directory(
