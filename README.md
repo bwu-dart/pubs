@@ -6,5 +6,5 @@
 
 ```
 pub global activate pubs
-pub run pubs
+pub global run pubs
 ```
