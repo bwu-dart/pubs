@@ -18,7 +18,7 @@ class BuildServerDeployableCommand {
 Create a directory consiting of all files necessary to deploy the server
               application. Optionally create a ZIP archive.
 ''') // special string formatting for proper usage output
-  deployable(@Positional() int count, { //
+  deployable({ //
       @Option(help: '''
 The absolute or relative path where the directory should be created.''',
           abbr: 'o',
@@ -57,7 +57,7 @@ code is actually used. This is *no* tree-shaking mechanism.''',
           abbr: 'k',
           defaultsTo: false,
           negatable: true) //
-      String skipUnused,
+      bool skipUnused,
       //
       @Option(help: '''
 Explicitly include files and directories of packages which are skipped when
@@ -76,12 +76,12 @@ Create a ZIP archive file containing all files copied to the outputDirectory.'''
           abbr: 'z',
           defaultsTo: false,
           negatable: true) //
-      String createZip,
+      bool createZip,
       //
       @Option(help: '''
 The name of the created ZIP archive file.''',
           abbr: 'n',
-          defaultsTo: defaultStaticFilesDestinationDirectory) //
+          defaultsTo: defaultArchiveFileName) //
       String zipName}) {
     //
     final options = new BuildOptions();
