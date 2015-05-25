@@ -1,7 +1,7 @@
 name: pubs
 author: Günter Zöchbauer <guenter@gzoechbauer.com>
 homepage: http://github.com/zoechi/pubs
-version: 0.1.0
+version: 0.1.1
 environment:
   sdk: '>=1.9.0 <2.0.0'
 description: Automate Dart build and deploy tasks.
