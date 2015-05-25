@@ -1,8 +1,7 @@
 library pubs.bin.pubs;
 
-import 'dart:io' as io;
-import 'package:pubs/build_server.dart';
+import 'package:pubs/pubs.dart';
+import 'package:unscripted/unscripted.dart';
 
-main([List<String> args]) async {
-  new BuildServer().runAll();
-}
+main(arguments) => new Script(PubsScriptModel).execute(
+    arguments.length > 1 ? arguments : arguments.toList()..add('help'));

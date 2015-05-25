@@ -21,6 +21,10 @@ packages:
     description: barback
     source: hosted
     version: "0.15.2+4"
+  charcode:
+    description: charcode
+    source: hosted
+    version: "1.1.0"
   cli_util:
     description: cli_util
     source: hosted
@@ -40,7 +44,11 @@ packages:
   grinder:
     description: grinder
     source: hosted
-    version: "0.7.1+1"
+    version: "0.7.1+3"
+  http:
+    description: http
+    source: hosted
+    version: "0.11.2"
   http_multi_server:
     description: http_multi_server
     source: hosted
@@ -72,7 +80,7 @@ packages:
   package_config:
     description:
       ref: null
-      resolved-ref: "286f9cf48448c4563e735a142c6f9442ab57674e"
+      resolved-ref: "5f8ce7330c4ed0397334a1672814874520978f61"
       url: "https://github.com/dart-lang/package_config.git"
     source: git
     version: "0.0.1"
@@ -83,7 +91,7 @@ packages:
   pool:
     description: pool
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   pub_semver:
     description: pub_semver
     source: hosted

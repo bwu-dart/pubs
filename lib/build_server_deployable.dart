@@ -1,4 +1,4 @@
-library pubs.build_server;
+library pubs.build_server_deployable;
 
 import 'dart:io' as io;
 import 'package:path/path.dart' as path;
@@ -8,48 +8,58 @@ import 'package:pubs/src/dependency_collector.dart';
 import 'dart:collection';
 
 /// The directory where the deployable artifacts are created.
-final defaultOutputDirectory = new io.Directory('build/bin');
+const defaultOutputDirectory = 'build/bin';
+
 /// The directory where the entry point source files for the server application
 /// are.
-final defaultBinDirectory = new io.Directory('bin');
+const defaultBinDirectory = 'bin';
+
 /// The name of the `pubspec.yaml` file is used to determine if the current
 /// working directory is the root directory of a Dart package.
-final defaultPubspecFile = new io.File('pubspec.yaml');
+const defaultPubspecFile = 'pubspec.yaml';
+
 /// The directory where the packages links can be found.
-final defaultPackagesRoot = new io.Directory('packages');
+const defaultPackageRoot = 'packages';
+
 /// The `.packages` file containing the references to the source of the
 /// dependencies.
-final defaultPackagesFile = new io.File('.packages');
+const defaultPackagesFile = '.packages';
+
 /// The directory where the output from `pub build web` was created.
-final defaultStaticFilesSourceDirectory = new io.Directory('build/web');
+const defaultStaticFilesSourceDirectory = 'build/web';
+
 /// The directory where the static web files are copied to.
-final defaultStaticFilesDestinationDirectory =
-    new io.Directory('build/bin/web');
+const defaultStaticFilesDestinationDirectory = 'build/bin/web';
+
+/// The name of the create ZIP archive file.
+const defaultArchiveFileName = 'server_deployable.zip';
+
 
 /// Options to customize how the deployment directory is created.
 class BuildOptions {
   /// The directory where the deployable directory is created.
-  io.Directory outputDirectory = defaultOutputDirectory;
+  io.Directory outputDirectory = new io.Directory(defaultOutputDirectory);
 
   /// The directory containing the server application entry points.
-  io.Directory binDirectory = defaultBinDirectory;
+  io.Directory binDirectory = new io.Directory(defaultBinDirectory);
 
-  /// The packages directory used to resolve package dependencies.
-  io.Directory packageRoot = defaultPackagesRoot;
+  /// The packages directory used to find dependency packages in the file
+  /// system.
+  io.Directory packageRoot = new io.Directory(defaultPackageRoot);
 
-  /// The `.package` file used to resolve package dependencies.
+  /// The `.package` file used to find dependency packages in the file system.
   /// If [packagesFile] is provided and found, [packageRoot] is ignored.
-  io.File packagesFile = defaultPackagesFile;
+  io.File packagesFile = new io.File(defaultPackagesFile);
 
   /// A directory containing static files to copy into the deployable directory.
   /// For example `build/web`.
-  io.Directory get staticFilesSourceDirectory =>
-      defaultStaticFilesSourceDirectory;
+  io.Directory staticFilesSourceDirectory =
+      new io.Directory(defaultStaticFilesSourceDirectory);
 
   /// The destination directory inside the deployable directory, where to copy
   /// the static files to.
-  io.Directory get staticFilesDestinationDirectory =>
-      defaultStaticFilesDestinationDirectory;
+  io.Directory staticFilesDestinationDirectory =
+      new io.Directory(defaultStaticFilesDestinationDirectory);
 
   /// Use the analyzer to find which Dart source files are actually used and
   /// skip copying all others. If files are imported they will be copied, no
@@ -57,7 +67,7 @@ class BuildOptions {
   bool skipUnusedFiles = false;
 
   /// Explicitly include files and directories of packages which are
-  /// skipped when [skipUnusedFiles] is [:true:] resource files.
+  /// skipped when [skipUnusedFiles] is [:true:]. For example resource files.
   /// [include] is ignored when [skipUnusedFiles] is [:false:]
   /// The key of the map is the name of the package and the value is a list of
   /// paths relative to the packages `lib` directory.
@@ -69,15 +79,15 @@ class BuildOptions {
   bool createArchive = true;
 
   /// The filename to use for the generated ZIP archive.
-  String archiveFileName = 'server_deployable.zip';
+  String archiveFileName = defaultArchiveFileName;
 }
 
 /// Creates a deployable directory and optional a ZIP archive from a Dart
 /// server-side (console) application.
-class BuildServer {
+class BuildServerDeployable {
   BuildOptions options;
 
-  io.File pubspecFile = defaultPubspecFile;
+  io.File pubspecFile = new io.File(defaultPubspecFile);
 
   /// A map from a dependency package name to the actual location on the file
   /// system.
@@ -91,7 +101,7 @@ class BuildServer {
   HashSet<CopyItem> itemsToCopy;
 
   /// If [options] is omitted the default configuration is used.
-  BuildServer([this.options]) {
+  BuildServerDeployable([this.options]) {
     if (options == null) {
       options = new BuildOptions();
     }
