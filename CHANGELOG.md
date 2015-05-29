@@ -1,3 +1,9 @@
+## 0.1.2
+- use `package_config` from hosted instead of Git.
+- fix Grinder task in test project
+- fix copying packages (calculating destination path)
+- fix tests
+
 ## 0.1.1+5
 - some fixes in the README.md
 - fix homepage in `pubspec.yaml` 

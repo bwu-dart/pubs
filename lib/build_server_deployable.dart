@@ -4,7 +4,6 @@ import 'dart:io' as io;
 import 'package:path/path.dart' as path;
 import 'package:archive/archive.dart';
 import 'package:package_config/discovery.dart';
-import 'package:package_config/packages.dart';
 import 'package:pubs/src/dependency_collector.dart';
 import 'dart:collection';
 
@@ -115,6 +114,10 @@ class BuildServerDeployable {
 
   /// Purge all files in the output directory before the new output is generated.
   void purgeOutputDirectory() {
+    // TODO(zoechi) remove this check, because it prevents running from
+    // different directories and makes some of the options obsolete.
+    // It was added mostly for security during development to not accidentally
+    // purge the wrong directory.
     if (!_checkWorkingDirectory()) {
       throw 'No "pubspec.yaml" file found. "${io.Directory.current.path}" doesn\'t seem to be the root directory of a Dart package.';
     }
@@ -151,10 +154,10 @@ class BuildServerDeployable {
 
     packagesMapDestination = {};
     packagesMapSource.forEach((packageName, packageDirectory) {
-      final destinationPath =
-          path.join(options.outputDirectory.path, 'packages', packageName);
       packagesMapDestination[packageName] = new io.Directory(
-          path.relative(destinationPath, from: options.outputDirectory.path));
+          path.join(options.outputDirectory.path, 'packages', packageName));
+//      packagesMapDestination[packageName] = new io.Directory(
+//          path.relative(destinationPath, from: options.outputDirectory.path));
     });
   }
 

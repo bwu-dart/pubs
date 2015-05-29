@@ -1,7 +1,7 @@
 name: pubs
 author: Günter Zöchbauer <guenter@gzoechbauer.com>
 homepage: http://github.com/bwu-dart/pubs
-version: 0.1.1+5
+version: 0.1.2
 environment:
   sdk: '>=1.9.0 <2.0.0'
 description: Automate Dart build and deploy tasks.
@@ -11,8 +11,8 @@ dependencies:
   ansicolor: '^0.0.9'
   archive: '^1.0.19'
   cli_util: '^0.0.1+2'
-  package_config:
-    git: https://github.com/dart-lang/package_config.git
+  package_config: '^0.0.2'
+#    git: https://github.com/dart-lang/package_config.git
   path: '^1.3.5'
   unscripted: '^0.6.1+1'
 

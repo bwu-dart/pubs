@@ -1,4 +1,4 @@
-library bwu_log.tool.grind;
+library pubs.tool.grind;
 
 import 'package:grinder/grinder.dart';
 
@@ -20,7 +20,7 @@ check() => _check();
 checkFormat() => _checkFormat();
 
 @Task('Fix all source format issues')
-formatAll() => _format();
+format() => _format();
 
 @Task('Run lint checks')
 lint() => _lint();

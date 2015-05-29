@@ -8,7 +8,7 @@ import 'package:pubs/build_server_deployable.dart';
 
 final sampleProjectDirectory = new io.Directory('sub_projects/sample_project');
 io.Directory get outputDirectory => new io.Directory(
-    path.join(sampleProjectDirectory.path, defaultOutputDirectory.path));
+    path.join(sampleProjectDirectory.path, defaultOutputDirectory));
 
 main() {
   group('something', () {
@@ -20,14 +20,15 @@ main() {
     });
 
     test('something', () {
-      expect(new io.File(path.join(sampleProjectDirectory.path,
-          outputDirectory.path, 'bin/sample1.dart')).existsSync(), isTrue);
-      expect(new io.File(path.join(sampleProjectDirectory.path,
-          outputDirectory.path, 'bin/sample2.dart')).existsSync(), isTrue);
-      expect(new io.Directory(path.join(sampleProjectDirectory.path,
-          outputDirectory.path, 'bin/packages')).existsSync(), isFalse);
-      expect(new io.Link(path.join(sampleProjectDirectory.path,
-          outputDirectory.path, 'bin/packages')).existsSync(), isFalse);
+      expect(new io.File(path.join(outputDirectory.path, 'sample1.dart'))
+          .existsSync(), isTrue);
+      expect(new io.File(path.join(outputDirectory.path, 'sample2.dart'))
+          .existsSync(), isTrue);
+      expect(new io.Directory(path.join(outputDirectory.path, 'packages'))
+          .existsSync(), isTrue);
+      expect(
+          new io.Link(path.join(outputDirectory.path, 'packages')).existsSync(),
+          isFalse);
     });
   });
 }

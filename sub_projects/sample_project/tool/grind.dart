@@ -31,8 +31,7 @@ format() => _format();
 lint() => _lint();
 
 _buildServer() {
-//  _activatePubs();
-  Pub.global.run('pubs', arguments: ['deploy', 'server']);
+  Pub.global.run('pubs', arguments: ['deployable']);
 }
 
 // Used during development to activate from -spath .

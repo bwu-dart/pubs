@@ -8,7 +8,7 @@ import 'package:pubs/src/dependency_collector.dart';
 
 final sampleProjectDirectory = new io.Directory('sub_projects/sample_project');
 io.Directory get binDirectory => new io.Directory(
-    path.join(sampleProjectDirectory.path, defaultBinDirectory.path));
+    path.join(sampleProjectDirectory.path, defaultBinDirectory));
 
 main() {
   group('something', () {

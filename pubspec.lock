@@ -78,12 +78,9 @@ packages:
     source: hosted
     version: "0.0.3"
   package_config:
-    description:
-      ref: null
-      resolved-ref: "5f8ce7330c4ed0397334a1672814874520978f61"
-      url: "https://github.com/dart-lang/package_config.git"
-    source: git
-    version: "0.0.1"
+    description: package_config
+    source: hosted
+    version: "0.0.2+3"
   path:
     description: path
     source: hosted
