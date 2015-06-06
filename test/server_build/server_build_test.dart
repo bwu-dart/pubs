@@ -13,8 +13,7 @@ io.Directory get outputDirectory => new io.Directory(
 main() {
   group('something', () {
     setUp(() {
-      Pub.global.run('grinder',
-          arguments: ['build-server'],
+      new PubApp.global('grinder').run(['build-server'],
           runOptions: new RunOptions(
               workingDirectory: sampleProjectDirectory.path));
     });

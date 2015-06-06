@@ -1,5 +1,10 @@
 # Pubs - tools for managing Pub packages.
 
+[![Star this Repo](https://img.shields.io/github/stars/bwu-dart/pubs.svg?style=flat)](https://github.com/bwu-dart/pubs)
+[![Pub Package](https://img.shields.io/pub/v/pubs.svg?style=flat)](https://pub.dartlang.org/packages/pubs)
+[![Build Status](https://travis-ci.org/bwu-dart/pubs.svg?branch=travis)](https://travis-ci.org/bwu-dart/pubs)
+[![Coverage Status](https://coveralls.io/repos/bwu-dart/pubs/badge.svg)](https://coveralls.io/r/bwu-dart/pubs)
+
 ## Usage
 
 ```

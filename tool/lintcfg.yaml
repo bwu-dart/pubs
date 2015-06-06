@@ -1,6 +1,7 @@
 # File set description: lists of patterns to include/exclude
 files:
   include:
+    - '**/bin/**'
     - '**/example/**'
     - '**/lib/**'
     - '**/test/**'
