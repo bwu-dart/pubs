@@ -28,7 +28,7 @@ packages:
   bwu_dart_archive_downloader:
     description: bwu_dart_archive_downloader
     source: hosted
-    version: "0.2.0+1"
+    version: "0.3.0+2"
   bwu_pub_client:
     description: bwu_pub_client
     source: hosted
@@ -40,7 +40,7 @@ packages:
   bwu_utils_dev:
     description: bwu_utils_dev
     source: hosted
-    version: "0.1.0-dev.9"
+    version: "0.1.0-dev.10"
   charcode:
     description: charcode
     source: hosted
