@@ -17,6 +17,7 @@ with_content_shell: true
 script: dart -c tool/grind.dart travis
 
 before_install:
+  - pub global activate -spath .
   - cd sub_projects/sample_project
   - pub upgrade
   - cd ../..
