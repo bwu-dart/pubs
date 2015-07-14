@@ -4,15 +4,22 @@ dart:
   - stable
   - dev
 
-env:
-  - PUB=DOWNGRADE
-  - PUB=UPGRADE
-
-script: dart -c tool/grind.dart travis
+#env:
+#  - PUB=DOWNGRADE
+#  - PUB=UPGRADE
 
 # Speed up builds by using containerization. Disable this if you need to use
 # sudo in your scripts.
 sudo: false
+
+with_content_shell: true
+
+script: dart -c tool/grind.dart travis
+
+before_install:
+  - cd sub_projects/sample_project
+  - pub upgrade
+  - cd ../..
 
 #branches:
 #  only:

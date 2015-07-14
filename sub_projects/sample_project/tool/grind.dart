@@ -30,8 +30,7 @@ format() => _format();
 @Task('Run lint checks')
 lint() => _lint();
 
-_buildServer() =>
-  new PubApp.global('pubs').run(['deployable']);
+_buildServer() => new PubApp.global('pubs').run(['deployable']);
 
 // Used during development to activate from -spath .
 //void _activatePubs() {
@@ -59,7 +58,7 @@ _buildServer() =>
 
 _analyze() => new PubApp.global('tuneup').run(['check']);
 
-_check() => run('pub', arguments: ['publish', '-n']);
+_check() {} //=> run('pub', arguments: ['publish', '-n']);
 
 _checkFormat() {
   if (DartFmt.dryRun(sourceDirs)) context

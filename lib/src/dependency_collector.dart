@@ -138,12 +138,12 @@ class AnalysisDriver {
     ChangeSet changeSet = new ChangeSet();
     for (io.File file in files) {
       JavaFile sourceFile = new JavaFile(path.normalize(file.absolute.path));
-      Source source = new FileBasedSource.con2(sourceFile.toURI(), sourceFile);
+      Source source = new FileBasedSource(sourceFile, sourceFile.toURI());
       Uri uri = context.sourceFactory.restoreUri(source);
       if (uri != null) {
         // Ensure that we analyze the file using its canonical URI (e.g. if
         // it's in "/lib", analyze it using a "package:" URI).
-        source = new FileBasedSource.con2(uri, sourceFile);
+        source = new FileBasedSource(sourceFile, uri);
       }
       sources.add(source);
       changeSet.addedSource(source);

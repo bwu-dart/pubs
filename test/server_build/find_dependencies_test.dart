@@ -1,3 +1,4 @@
+@TestOn('vm')
 library pubs.test.server_build.server_build.find_dependencies;
 
 import 'dart:io' as io;
