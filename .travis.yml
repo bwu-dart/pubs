@@ -21,6 +21,7 @@ before_install:
   - pub upgrade
   - cd ../..
   - pub upgrade
+  - chmod -R ug+r /home/travis/.pub-cache
   - ls -alR /home/travis/.pub-cache
   - pub global activate -spath .
 
