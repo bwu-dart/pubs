@@ -1,3 +1,7 @@
+## 0.2.0
+- update package_config dependency to 0.1.1
+- migrate to changed .packages file format ':' instead of '='
+
 ## 0.1.2
 - use `package_config` from hosted instead of Git.
 - fix Grinder task in test project

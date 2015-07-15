@@ -1,8 +1,8 @@
-# Generate by pub on 2015-07-14 17:35:07.506.
+# Generate by pub on 2015-07-15 10:05:18.502.
 # This file contains a map from Dart package names to Dart package locations.
 # Dart tools, including the Dart VM and Dart analyzer, rely on the content.
 # AUTO GENERATED - DO NOT EDIT
-analyzer:file:///home/zoechi/.pub-cache/hosted/pub.dartlang.org/analyzer-0.25.1/lib/
+analyzer:file:///home/zoechi/.pub-cache/hosted/pub.dartlang.org/analyzer-0.25.2/lib/
 ansicolor:file:///home/zoechi/.pub-cache/hosted/pub.dartlang.org/ansicolor-0.0.9/lib/
 args:file:///home/zoechi/.pub-cache/hosted/pub.dartlang.org/args-0.13.2/lib/
 async:file:///home/zoechi/.pub-cache/hosted/pub.dartlang.org/async-1.2.0/lib/
